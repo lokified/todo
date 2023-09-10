@@ -62,7 +62,7 @@ export default function Dashboard() {
 
           <div className="p-8 rounded-md bg-zinc-100">
             {sortedTodoList.map((todo) => {
-              return <ToDoItem todo={todo} />;
+              return <ToDoItem key={todo.id} todo={todo} />;
             })}
           </div>
         </div>
