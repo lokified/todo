@@ -16,6 +16,7 @@ export default function Register() {
   const router = useRouter();
 
   const onSignUp = async (data) => {
+    setIsLoading(true)
     createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((result) => {
         router.push("/login");
@@ -24,7 +25,7 @@ export default function Register() {
         }, 1500);
       })
       .catch((error) => {
-        const errorMessage = error.message;
+        const errorMessage = error.message.replace("Firebase: Error", '');
         setIsLoading(false);
 
         setErrorMessage(errorMessage);
@@ -71,7 +72,6 @@ export default function Register() {
                 <div className="w-full">
                   <input
                     disabled={isLoading}
-                    value={email}
                     type="text"
                     placeholder="email"
                     className={`w-full rounded ${
@@ -92,7 +92,6 @@ export default function Register() {
                 <div className="w-full">
                   <input
                     disabled={isLoading}
-                    value={password}
                     type="password"
                     placeholder="password"
                     className={`w-full rounded mt-4 ${

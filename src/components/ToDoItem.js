@@ -27,20 +27,17 @@ export const ToDoItem = ({ todo }) => {
     dispatch(
       updateTodo({
         ...todo,
-        status: checked ? "complete" : "inComplete",
+        status: !checked ? "complete" : "inComplete",
       })
     );
   };
 
-  const calculateTimeRemaining = (createdAt, dueDate) => {
-    const timeDifference = dueDate - createdAt;
+  const calculateTimeRemaining = (dueDate) => {
+    const currentTime = new Date();
+    const timeDifference = dueDate - currentTime;
 
-    if (timeDifference < 0) {
+    if (timeDifference <= 0) {
       return "The due date has passed.";
-    }
-
-    if (timeDifference == 0) {
-      return "Due Today.";
     }
 
     // Get the number of milliseconds in a day.
@@ -49,6 +46,10 @@ export const ToDoItem = ({ todo }) => {
     const days = Math.floor(timeDifference / millisecondsPerDay);
 
     let remainingTime = "";
+
+    if (days == 0) {
+      return "Due Today.";
+    }
 
     if (days > 0) {
       remainingTime += `Due in ${days} day${days == 1 ? "" : "s"}.`;
@@ -63,14 +64,16 @@ export const ToDoItem = ({ todo }) => {
 
       <div className="w-full p-2 my-4 rounded-md shadow-inner bg-blue-100 flex justify-between items-center">
         <div className="flex">
-          <div className="form-control">
-            <input
-              type="checkbox"
-              className="checkbox border-none"
-              onClick={onCompleteItem}
-              checked={checked ? "checked" : ""}
-            />
-          </div>
+          <form>
+            <div className="form-control">
+              <input
+                type="checkbox"
+                className="checkbox border-none"
+                checked={checked}
+                onClick={() => onCompleteItem()}
+              />
+            </div>
+          </form>
 
           <div className="pl-2">
             <p className="text-xl">{todo.title}</p>
@@ -84,10 +87,7 @@ export const ToDoItem = ({ todo }) => {
 
               <div>
                 <p className="text-[0.8rem] text-zinc-500 ml-2">
-                  {calculateTimeRemaining(
-                    new Date(todo.createdAt),
-                    new Date(todo.dueDate)
-                  )}
+                  {calculateTimeRemaining(new Date(todo.dueDate))}
                 </p>
               </div>
             </div>

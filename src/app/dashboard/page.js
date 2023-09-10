@@ -12,15 +12,19 @@ import { ToDoItem } from "@/components/ToDoItem";
 
 export default function Dashboard() {
   const [showModal, setShowModal] = useState(false);
+
   const user = useSelector((state) => state.authReducer.user);
+  const todosArrString = useSelector((state) => state.todoReducer.todoList);
+
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const todosArrString = useSelector((state) => state.todoReducer.todoList);
-  const sortedTodoList = [...todosArrString];
-  sortedTodoList
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .filter((todo) => todo.userId === user.uid);
+  const filteredTodoList = todosArrString.filter(
+    (todo) => todo.userId === user.uid
+  );
+  const sortedTodoList = [...todosArrString].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
 
   const onLogout = () => {
     signOut(auth);
@@ -34,10 +38,10 @@ export default function Dashboard() {
 
       <div className="container py-6">
         <div className="container flex justify-around items-center">
-          <h1 className="text-blue-400 text-xl">Welcome {user.email}</h1>
+          <h1 className="text-slate-900 text-3xl italic font-bold">ToDo</h1>
           <button
             onClick={() => onLogout()}
-            className="btn bg-red-800 text-white hover:bg-red-500 "
+            className="btn bg-slate-800 text-white hover:bg-red-500 "
           >
             Logout
           </button>
