@@ -1,31 +1,85 @@
 "use client";
+import { login } from "@/redux/feauters/authSlice";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
+import { useDispatch } from "react-redux";
+import { signInWithEmailAndPassword, auth } from "../../firebase/config";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
+
   const router = useRouter();
+  const dispatch = useDispatch();
 
-  const onSignInWithGoogle = () => {};
+  const onSignInWithGoogle = () => {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
 
-  const onSignIn = (e) => {
-    e.preventDefault();
+        const user = result.user;
+
+        dispatch(
+          login({
+            uid: user.uid,
+            email: user.email,
+          })
+        );
+
+        router.push("/dashboard");
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        setIsLoading(false);
+        setErrorMessage(errorMessage);
+      });
+  };
+
+  const onSignIn = (data) => {
+    setIsLoading(true);
+    signInWithEmailAndPassword(auth, data.email, data.password)
+      .then((result) => {
+        dispatch(
+          login({
+            uid: result.user.uid,
+            email: result.user.email,
+          })
+        );
+
+        router.push("/dashboard");
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        setErrorMessage(errorMessage);
+        setIsLoading(false);
+      });
   };
 
   return (
     <>
+      {errorMessage && (
+        <div class="toast toast-top toast-end">
+          <div class="alert bg-red-500 text-white">
+            <span>{errorMessage}</span>
+          </div>
+        </div>
+      )}
+
       <div className="container h-full lg:px-24 md:px-16">
         <div className="lg:flex my-12 w-full">
           <div className="flex flex-col justify-center items-center">
@@ -52,7 +106,6 @@ export default function Login() {
               <form onSubmit={handleSubmit(onSignIn)}>
                 <div className="w-full">
                   <input
-                    value={email}
                     type="text"
                     placeholder="email"
                     className={`w-full rounded ${
@@ -63,7 +116,6 @@ export default function Login() {
                       pattern:
                         "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$",
                     })}
-                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 {errors.email && (
@@ -74,14 +126,12 @@ export default function Login() {
 
                 <div className="w-full">
                   <input
-                    value={password}
                     type="password"
                     placeholder="password"
                     className={`w-full rounded mt-4 ${
                       isLoading ? "opacity-25" : "opacity-100"
                     }`}
                     {...register("password", { required: true })}
-                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
 

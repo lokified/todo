@@ -2,25 +2,45 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { createUserWithEmailAndPassword, auth } from "../../firebase/config";
 
 export default function Register() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
   const router = useRouter();
 
-  const onSignUp = async (data) => {};
+  const onSignUp = async (data) => {
+    createUserWithEmailAndPassword(auth, data.email, data.password)
+      .then((result) => {
+        router.push("/login");
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1500);
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        setIsLoading(false);
+
+        setErrorMessage(errorMessage);
+      });
+  };
 
   return (
     <>
+      {errorMessage && (
+        <div class="toast toast-top toast-end">
+          <div class="alert bg-red-500 text-white">
+            <span>{errorMessage}</span>
+          </div>
+        </div>
+      )}
+
       <div className="container h-full lg:px-24 md:px-16">
         <div className="lg:flex my-12 w-full">
           <div className="flex flex-col justify-center items-center">
@@ -62,7 +82,6 @@ export default function Register() {
                       pattern:
                         "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$",
                     })}
-                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 {errors.email && (
@@ -84,7 +103,6 @@ export default function Register() {
                       minLength: 6,
                       maxLength: 20,
                     })}
-                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
                 {errors.password && (
