@@ -43,7 +43,7 @@ export default function Login() {
         }, 1000);
       })
       .catch((error) => {
-        const errorMessage = error.message;
+        const errorMessage = error.message.replace("Firebase: Error", '');
         setIsLoading(false);
         setErrorMessage(errorMessage);
       });

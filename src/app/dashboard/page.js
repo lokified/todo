@@ -61,9 +61,13 @@ export default function Dashboard() {
           </div>
 
           <div className="p-8 rounded-md bg-zinc-100">
-            {sortedTodoList.map((todo) => {
-              return <ToDoItem key={todo.id} todo={todo} />;
-            })}
+            {sortedTodoList.length  > 0? (
+              sortedTodoList.map((todo) => {
+                return <ToDoItem key={todo.id} todo={todo} />;
+              })
+            ) : (
+              <p className="text-center text-zinc-500">Todo list is empty</p>
+            )}
           </div>
         </div>
       </div>

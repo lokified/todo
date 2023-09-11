@@ -68,7 +68,7 @@ export const ToDoItem = ({ todo }) => {
                 type="checkbox"
                 className="checkbox border-none"
                 checked={checked}
-                onClick={() => onCompleteItem()}
+                onChange={() => onCompleteItem()}
               />
             </div>
           </form>
