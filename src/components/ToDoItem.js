@@ -2,7 +2,6 @@ import { deleteTodo, updateTodo } from "@/redux/feauters/todoSlice";
 import React, { useEffect, useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import { useDispatch } from "react-redux";
-import { TodoModal } from "./TodoModal";
 import { BsFlagFill } from "react-icons/bs";
 
 export const ToDoItem = ({ todo }) => {
@@ -60,7 +59,6 @@ export const ToDoItem = ({ todo }) => {
 
   return (
     <>
-      <TodoModal />
 
       <div className="w-full p-2 my-4 rounded-md shadow-inner bg-blue-100 flex justify-between items-center">
         <div className="flex">

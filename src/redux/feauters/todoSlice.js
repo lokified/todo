@@ -2,13 +2,17 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const TODO_LIST_KEY = "todolist";
 
-const getInitialToDos = () => {
-  const localList = window.localStorage.getItem(TODO_LIST_KEY);
+const isWindowDefined = typeof window !== "undefined";
 
-  if (localList) {
-    return JSON.parse(localList);
+const getInitialToDos = () => {
+  if (isWindowDefined) {
+    const localList = window.localStorage.getItem(TODO_LIST_KEY);
+
+    if (localList) {
+      return JSON.parse(localList);
+    }
+    window.localStorage.setItem(TODO_LIST_KEY, JSON.stringify([]));
   }
-  window.localStorage.setItem(TODO_LIST_KEY, JSON.stringify([]));
 
   return [];
 };
@@ -22,7 +26,6 @@ export const todoSlice = createSlice({
   initialState,
   reducers: {
     addToDo: (state, action) => {
-
       state.todoList.push(action.payload);
 
       // Retrieve the existing list from local storage

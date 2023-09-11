@@ -22,7 +22,7 @@ export default function Dashboard() {
   const filteredTodoList = todosArrString.filter(
     (todo) => todo.userId === user.uid
   );
-  const sortedTodoList = [...todosArrString].sort(
+  const sortedTodoList = [...filteredTodoList].sort(
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
 

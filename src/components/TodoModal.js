@@ -80,7 +80,7 @@ export const TodoModal = ({ showModal, setShowModal }) => {
                   onChange={(e) => setPriority(e.target.value)}
                   className="select select-bordered focus:outline-none"
                 >
-                  <option disabled selected>Select Priority</option>
+                  <option disabled defaultValue={"Low"}>Select Priority</option>
                   <option>High</option>
                   <option>Low</option>
                 </select>
